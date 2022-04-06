@@ -1,8 +1,19 @@
 package com.supportportal.service;
 
-import org.springframework.stereotype.Service;
+import com.supportportal.domain.User;
+import com.supportportal.exception.domain.EmailExistException;
+import com.supportportal.exception.domain.UserNotFoundException;
+import com.supportportal.exception.domain.UsernameExistException;
 
-@Service
+
+import java.util.List;
+
 public interface UserService {
+ User register(String firstname, String lastname, String username, String email) throws UserNotFoundException, EmailExistException, UsernameExistException;
 
+ List<User> getUsers();
+
+ User findUserByUsername(String username);
+
+ User findUserByEmail(String email);
 }
