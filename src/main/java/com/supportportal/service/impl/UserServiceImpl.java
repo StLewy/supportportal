@@ -199,7 +199,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void setPassword(String email) throws MessagingException, EmailNotFoundException {
+    public void resetPassword(String email) throws MessagingException, EmailNotFoundException {
         User user = userRepository.findUserByEmail(email);
         if (user == null){
             throw new EmailNotFoundException(NO_USER_FOUND_BY_EMAIL + email);
