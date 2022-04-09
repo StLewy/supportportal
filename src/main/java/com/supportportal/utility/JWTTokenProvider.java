@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Verification;
 import com.supportportal.domain.UserPrincipal;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +53,7 @@ public class JWTTokenProvider {
 
     public boolean isTokenValid(String username, String token){
         JWTVerifier verifier = getJWTVerifier();
-        return StringUtils.isNoneEmpty(username) && isTokenExpired(verifier, token);
+        return StringUtils.isNoneEmpty(username) && !isTokenExpired(verifier, token);
     }
 
     public String getSubject(String token){

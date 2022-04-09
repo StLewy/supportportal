@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -74,7 +75,7 @@ public class UserResource extends ExceptionHandling {
                                            @RequestParam("role") String role,
                                            @RequestParam("isActive") String isActive,
                                            @RequestParam("isNonLocked") String isNonLocked,
-                                           @RequestParam(value = "progileImage", required = false) MultipartFile profileImage)
+                                           @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
             throws UserNotFoundException, EmailExistException, IOException, UsernameExistException {
         User newUser = userService.addNewUser(firstName, lastName, username, email, role
                 , Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNonLocked), profileImage);
@@ -91,7 +92,7 @@ public class UserResource extends ExceptionHandling {
                                               @RequestParam("role") String role,
                                               @RequestParam("isActive") String isActive,
                                               @RequestParam("isNonLocked") String isNonLocked,
-                                              @RequestParam(value = "progileImage", required = false) MultipartFile profileImage)
+                                              @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
             throws UserNotFoundException, EmailExistException, IOException, UsernameExistException {
         User updateUser = userService.updateUser(currentUsername, firstName, lastName, username, email, role
                 , Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNonLocked), profileImage);
@@ -112,7 +113,7 @@ public class UserResource extends ExceptionHandling {
 
     }
 
-    @GetMapping("/resetPassword/{email}")
+    @GetMapping("/resetpassword/{email}")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws EmailNotFoundException, MessagingException {
         userService.resetPassword(email);
         return response(OK, EMAIL_SENT + email);
@@ -120,14 +121,14 @@ public class UserResource extends ExceptionHandling {
 
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('user:delete')")
-    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") Long id) throws AccessDeniedException {
         userService.deleteUser(id);
         return response(NO_CONTENT, USER_DELETED_SUCCESSFULLY);
     }
 
     @PostMapping("/updateProfileImage")
     public ResponseEntity<User> updateProfileImage(@RequestParam("username") String username,
-                                                   @RequestParam(value = "progileImage") MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, UsernameExistException {
+                                                   @RequestParam(value = "profileImage") MultipartFile profileImage) throws UserNotFoundException, EmailExistException, IOException, UsernameExistException {
         User user = userService.updateProfileImage(username, profileImage);
         return new ResponseEntity<>(user, OK);
     }
